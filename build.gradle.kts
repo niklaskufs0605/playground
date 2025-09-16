@@ -30,6 +30,12 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Used for Hal
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.123.Final:osx-aarch_64")
+
 }
 
 tasks.withType<Test> {
