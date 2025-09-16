@@ -1,15 +1,12 @@
 package com.niklas.playground.hal.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.niklas.playground.hal.web.constants.DataConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Getter
 @JsonRootName("attributes")
@@ -18,8 +15,12 @@ public class ProductTypeResponse {
 
     public ProductTypeResponse(List<Attribute> attributes) {
         this.attributes = attributes.stream()
-                .filter(attribute -> Objects.equals(attribute.getName(), "Produkttyp"))
+                .filter(attribute -> Objects.equals(attribute.getName(), DataConstants.PRODUCT_TYPE))
                 .toList();
+
+        if(this.attributes.isEmpty()) {
+            throw new IllegalArgumentException("No 'ProductType' attribute found");
+        }
     }
 
     @Getter
