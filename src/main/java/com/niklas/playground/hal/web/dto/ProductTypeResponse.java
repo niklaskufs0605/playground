@@ -2,13 +2,12 @@ package com.niklas.playground.hal.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.niklas.playground.hal.web.constants.DataConstants;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Objects;
 
-@Getter
+@Data
 @JsonRootName("attributes")
 public class ProductTypeResponse {
     List<Attribute> attributes;
@@ -23,8 +22,7 @@ public class ProductTypeResponse {
         }
     }
 
-    @Getter
-    @AllArgsConstructor
+    @Data
     public static class Attribute {
         private String name;
         private List<String> values;

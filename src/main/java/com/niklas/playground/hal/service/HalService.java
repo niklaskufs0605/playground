@@ -11,6 +11,6 @@ public class HalService {
     private final DataClient dataClient;
 
     public Triple fetchData() {
-        return dataClient.getTripleIdentifiers().orElseThrow();
+        return dataClient.getTripleIdentifiers().orElseThrow(() -> new RuntimeException("Data not found"));
     }
 }

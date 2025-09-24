@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Slf4j
@@ -34,20 +35,19 @@ public class DataClient {
                 .bodyToMono(VARIATIONS);
     }
 
-    public Flux<BrandResponse> getBrand(Mono<CollectionModel<VariationSummary>> response) {
-        return response.flatMapMany(Flux::fromIterable)
-                .map(variation -> variation.getRequiredLink(DataConstants.BRAND_REFERENCE).getHref())
+    public Mono<BrandResponse> getBrand(Mono<CollectionModel<VariationSummary>> response) {
+        return response.map(variation -> variation.getRequiredLink(DataConstants.BRAND_REFERENCE).getHref())
                 .flatMap(url -> followLink(url, BrandResponse.class));
     }
 
-    public Flux<SupplierResponse> getSupplier(Mono<CollectionModel<VariationSummary>> response) {
-        return response.flatMapMany(Flux::fromIterable)
+    public Mono<SupplierResponse> getSupplier(Mono<CollectionModel<VariationSummary>> response) {
+        return response
                 .map(variation -> variation.getRequiredLink(DataConstants.RETAILER_RELATED_REFERENCE).getHref())
                 .flatMap(url -> followLink(url, SupplierResponse.class));
     }
 
-    public Flux<ProductTypeResponse> getProductType(Mono<CollectionModel<VariationSummary>> response) {
-        return response.flatMapMany(Flux::fromIterable)
+    public Mono<ProductTypeResponse> getProductType(Mono<CollectionModel<VariationSummary>> response) {
+        return response
                 .map(variation -> variation.getRequiredLink(DataConstants.ATTRIBUTES_REFERENCE).getHref())
                 .flatMap(url -> followLink(url, ProductTypeResponse.class));
     }
@@ -61,12 +61,12 @@ public class DataClient {
 
     public Optional<Triple> getTripleIdentifiers(){
         var response = getHalResponse();
-        var brand = getBrand(response).single();
-        var supplierId = getSupplier(response).single();
-        var productType = getProductType(response).single();
+        var brand = getBrand(response);
+        var supplierId = getSupplier(response);
+        var productType = getProductType(response);
         return Mono.zip(brand, supplierId, productType)
                 .map(t ->
                         new Triple(t.getT1().getTitle(), t.getT2().getSupplier().getId(), t.getT3().getAttributes().getFirst().getValues().getFirst()))
-                .blockOptional();
+                .blockOptional(Duration.ofSeconds(5));
     }
 }
