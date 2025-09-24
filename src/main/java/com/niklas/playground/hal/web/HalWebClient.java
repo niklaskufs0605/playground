@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.config.HypermediaWebClientConfigurer;
 import org.springframework.web.reactive.function.client.WebClient;
 
-//@EnableHypermediaSupport(type = {EnableHypermediaSupport.HypermediaType.HAL})
 @Configuration
 public class HalWebClient {
     /*
